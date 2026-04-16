@@ -1,0 +1,10 @@
+{
+  "name": "nyxacore-landing",
+  "version": "1.0.0",
+  "description": "NYXACORE Landing Page com admin CMS",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  }
+}

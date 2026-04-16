@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NYXACORE Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#050a08;--card:#0a1410;--border:#1a2f25;--accent:#4ade80;--text:#e8f5ec;--muted:#7eb895;--dim:#3d5e4d}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+::selection{background:var(--accent);color:var(--bg)}
+
+/* Login overlay */
+#login-overlay{position:fixed;inset:0;z-index:999;background:var(--bg);display:flex;align-items:center;justify-content:center}
+#login-overlay.hidden{display:none}
+.login-box{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:40px;max-width:400px;width:100%}
+.login-box h1{font-family:'JetBrains Mono',monospace;color:var(--accent);font-size:1.2rem;letter-spacing:.08em;margin-bottom:8px}
+.login-box p{color:var(--dim);font-size:.85rem;margin-bottom:24px}
+
+/* Layout */
+.admin-layout{display:flex;min-height:100vh}
+.sidebar{width:240px;background:var(--card);border-right:1px solid var(--border);padding:20px 0;position:fixed;height:100vh;overflow-y:auto}
+.sidebar h2{font-family:'JetBrains Mono',monospace;color:var(--accent);font-size:.85rem;letter-spacing:.08em;padding:0 20px;margin-bottom:20px}
+.sidebar a{display:block;padding:10px 20px;color:var(--muted);text-decoration:none;font-size:.9rem;border-left:2px solid transparent;transition:all .2s}
+.sidebar a:hover,.sidebar a.active{color:var(--accent);background:rgba(74,222,128,.05);border-left-color:var(--accent)}
+.main{flex:1;margin-left:240px;padding:32px}
+.main h2{font-size:1.5rem;font-weight:700;margin-bottom:24px;letter-spacing:-.01em}
+
+/* Forms */
+.form-group{margin-bottom:20px}
+.form-group label{display:block;font-size:.8rem;color:var(--muted);margin-bottom:6px;font-weight:500;letter-spacing:.02em}
+input[type="text"],input[type="number"],input[type="password"],textarea,select{
+  width:100%;background:var(--bg);border:1px solid var(--border);border-radius:6px;
+  padding:10px 14px;color:var(--text);font-size:.9rem;font-family:'Outfit',sans-serif;
+  transition:border-color .2s;resize:vertical;
+}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent)}
+textarea{min-height:80px}
+
+.btn{
+  background:var(--accent);color:var(--bg);border:none;padding:10px 24px;
+  border-radius:6px;font-weight:600;font-size:.9rem;cursor:pointer;
+  font-family:'Outfit',sans-serif;transition:all .2s;
+}
+.btn:hover{background:#5ceb96}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text)}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+.btn-danger{background:#ef4444}
+.btn-danger:hover{background:#dc2626}
+.btn-sm{padding:6px 14px;font-size:.8rem}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:24px;margin-bottom:16px}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.card-header h3{font-size:1rem;font-weight:600}
+
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+@media(max-width:768px){.grid-2,.grid-3{grid-template-columns:1fr}.sidebar{display:none}.main{margin-left:0}}
+
+.toast{position:fixed;bottom:24px;right:24px;background:var(--accent);color:var(--bg);padding:12px 24px;border-radius:8px;font-weight:600;z-index:1000;opacity:0;transform:translateY(20px);transition:all .3s}
+.toast.show{opacity:1;transform:translateY(0)}
+
+.inline-list .item{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px;padding:12px;background:var(--bg);border-radius:6px;border:1px solid var(--border)}
+.inline-list .item .fields{flex:1;display:flex;flex-direction:column;gap:8px}
+.inline-list .item input,.inline-list .item textarea{font-size:.85rem;padding:8px 10px}
+</style>
+</head>
+<body>
+
+<!-- Login -->
+<div id="login-overlay">
+  <div class="login-box">
+    <h1>NYXACORE</h1>
+    <p>Painel administrativo da landing page</p>
+    <div class="form-group">
+      <label>Token de acesso</label>
+      <input type="password" id="login-token" placeholder="Digite o token admin">
+    </div>
+    <button class="btn" onclick="doLogin()" style="width:100%">Entrar</button>
+    <div id="login-error" style="color:#ef4444;font-size:.85rem;margin-top:12px"></div>
+  </div>
+</div>
+
+<!-- Admin -->
+<div class="admin-layout">
+  <div class="sidebar">
+    <h2>ADMIN</h2>
+    <a href="#" class="active" data-section="hero">Hero</a>
+    <a href="#" data-section="products">Produtos</a>
+    <a href="#" data-section="pricing">Preços</a>
+    <a href="#" data-section="testimonials">Depoimentos</a>
+    <a href="#" data-section="contact">Contato / CTA</a>
+    <a href="#" data-section="seo">SEO</a>
+    <hr style="border-color:var(--border);margin:16px 20px">
+    <a href="/" target="_blank" style="color:var(--dim)">← Ver site</a>
+  </div>
+
+  <div class="main">
+    <!-- HERO -->
+    <div id="section-hero">
+      <h2>Hero</h2>
+      <div class="card">
+        <div class="form-group"><label>Badge</label><input type="text" data-bind="hero.badge"></div>
+        <div class="grid-2">
+          <div class="form-group"><label>Título linha 1</label><input type="text" data-bind="hero.title_line1"></div>
+          <div class="form-group"><label>Título accent</label><input type="text" data-bind="hero.title_accent"></div>
+        </div>
+        <div class="form-group"><label>Título linha 2</label><input type="text" data-bind="hero.title_line2"></div>
+        <div class="form-group"><label>Descrição</label><textarea data-bind="hero.description"></textarea></div>
+        <div class="grid-2">
+          <div class="form-group"><label>Botão primário</label><input type="text" data-bind="hero.cta_primary"></div>
+          <div class="form-group"><label>Botão secundário</label><input type="text" data-bind="hero.cta_secondary"></div>
+        </div>
+      </div>
+      <h3 style="margin:16px 0 12px;font-size:.95rem">Estatísticas do Hero</h3>
+      <div id="hero-stats-list" class="inline-list"></div>
+    </div>
+
+    <!-- PRODUCTS -->
+    <div id="section-products" style="display:none">
+      <h2>Produtos</h2>
+      <div id="products-list"></div>
+      <button class="btn btn-outline btn-sm" onclick="addProduct()" style="margin-top:8px">+ Adicionar produto</button>
+    </div>
+
+    <!-- PRICING -->
+    <div id="section-pricing" style="display:none">
+      <h2>Preços</h2>
+      <div id="pricing-list"></div>
+    </div>
+
+    <!-- TESTIMONIALS -->
+    <div id="section-testimonials" style="display:none">
+      <h2>Depoimentos</h2>
+      <div id="testimonials-list"></div>
+      <button class="btn btn-outline btn-sm" onclick="addTestimonial()" style="margin-top:8px">+ Adicionar depoimento</button>
+    </div>
+
+    <!-- CONTACT -->
+    <div id="section-contact" style="display:none">
+      <h2>Contato / CTA</h2>
+      <div class="card">
+        <div class="grid-2">
+          <div class="form-group"><label>WhatsApp (número)</label><input type="text" data-bind="contact.whatsapp_number"></div>
+          <div class="form-group"><label>Mensagem do WhatsApp</label><input type="text" data-bind="contact.whatsapp_message"></div>
+        </div>
+        <div class="form-group"><label>Email</label><input type="text" data-bind="contact.email"></div>
+        <div class="form-group"><label>Título do CTA</label><input type="text" data-bind="contact.cta_title"></div>
+        <div class="form-group"><label>Descrição do CTA</label><textarea data-bind="contact.cta_desc"></textarea></div>
+      </div>
+    </div>
+
+    <!-- SEO -->
+    <div id="section-seo" style="display:none">
+      <h2>SEO</h2>
+      <div class="card">
+        <div class="form-group"><label>Título da página (meta title)</label><input type="text" data-bind="seo.title"></div>
+        <div class="form-group"><label>Descrição (meta description)</label><textarea data-bind="seo.description"></textarea></div>
+      </div>
+    </div>
+
+    <!-- Save bar -->
+    <div style="position:sticky;bottom:0;padding:16px 0;background:var(--bg);border-top:1px solid var(--border);margin-top:32px;display:flex;gap:12px;align-items:center">
+      <button class="btn" onclick="saveAll()">Salvar alterações</button>
+      <button class="btn btn-outline" onclick="loadContent()">Descartar</button>
+      <span id="save-status" style="color:var(--dim);font-size:.85rem;margin-left:auto"></span>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+let content = {};
+let token = sessionStorage.getItem('nyxacore_admin_token') || '';
+
+// ═══ Login ═══
+async function doLogin() {
+  const t = document.getElementById('login-token').value.trim();
+  try {
+    const res = await fetch('/api/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token: t }) });
+    const data = await res.json();
+    if (data.ok) {
+      token = data.token;
+      sessionStorage.setItem('nyxacore_admin_token', token);
+      document.getElementById('login-overlay').classList.add('hidden');
+      loadContent();
+    } else {
+      document.getElementById('login-error').textContent = data.error || 'Token inválido';
+    }
+  } catch (e) {
+    document.getElementById('login-error').textContent = 'Erro de conexão';
+  }
+}
+
+if (token) {
+  document.getElementById('login-overlay').classList.add('hidden');
+  loadContent();
+}
+
+document.getElementById('login-token').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+
+// ═══ Content ═══
+async function loadContent() {
+  try {
+    const res = await fetch('/api/content');
+    content = await res.json();
+    renderAll();
+    showStatus('Conteúdo carregado');
+  } catch (e) {
+    showStatus('Erro ao carregar');
+  }
+}
+
+async function saveAll() {
+  collectAll();
+  try {
+    const res = await fetch('/api/content', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify(content),
+    });
+    const data = await res.json();
+    if (data.ok) {
+      showToast('Salvo com sucesso!');
+      showStatus('Salvo às ' + new Date().toLocaleTimeString('pt-BR'));
+    } else {
+      showToast('Erro: ' + (data.error || 'falha'));
+    }
+  } catch (e) {
+    showToast('Erro de conexão');
+  }
+}
+
+// ═══ Binding ═══
+function getNestedValue(obj, path) {
+  return path.split('.').reduce((o, k) => (o || {})[k], obj);
+}
+function setNestedValue(obj, path, val) {
+  const keys = path.split('.');
+  let target = obj;
+  for (let i = 0; i < keys.length - 1; i++) {
+    if (!target[keys[i]]) target[keys[i]] = {};
+    target = target[keys[i]];
+  }
+  target[keys[keys.length - 1]] = val;
+}
+
+function renderBindings() {
+  document.querySelectorAll('[data-bind]').forEach(el => {
+    const val = getNestedValue(content, el.dataset.bind) || '';
+    if (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT') el.value = val;
+    else el.textContent = val;
+  });
+}
+
+function collectBindings() {
+  document.querySelectorAll('[data-bind]').forEach(el => {
+    setNestedValue(content, el.dataset.bind, el.value);
+  });
+}
+
+// ═══ Dynamic lists ═══
+function renderHeroStats() {
+  const container = document.getElementById('hero-stats-list');
+  const stats = content.hero?.stats || [];
+  container.innerHTML = stats.map((s, i) => `
+    <div class="item">
+      <div class="fields">
+        <input type="text" value="${esc(s.number)}" placeholder="Número" data-stat-num="${i}">
+        <input type="text" value="${esc(s.label)}" placeholder="Label" data-stat-label="${i}">
+      </div>
+      <button class="btn btn-danger btn-sm" onclick="removeStat(${i})">✕</button>
+    </div>
+  `).join('');
+}
+
+function collectStats() {
+  content.hero.stats = [];
+  document.querySelectorAll('[data-stat-num]').forEach((el, i) => {
+    const label = document.querySelector(`[data-stat-label="${i}"]`);
+    if (el.value.trim()) content.hero.stats.push({ number: el.value, label: label?.value || '' });
+  });
+}
+
+function removeStat(i) { content.hero.stats.splice(i, 1); renderHeroStats(); }
+
+function renderProducts() {
+  const container = document.getElementById('products-list');
+  const products = content.products || [];
+  container.innerHTML = products.map((p, i) => `
+    <div class="card">
+      <div class="card-header"><h3>${esc(p.name) || 'Produto ' + (i + 1)}</h3><button class="btn btn-danger btn-sm" onclick="removeProduct(${i})">Remover</button></div>
+      <div class="grid-3">
+        <div class="form-group"><label>Código</label><input type="text" value="${esc(p.code)}" data-prod-code="${i}"></div>
+        <div class="form-group"><label>Nome</label><input type="text" value="${esc(p.name)}" data-prod-name="${i}"></div>
+        <div class="form-group"><label>Tags</label><input type="text" value="${esc(p.tags)}" data-prod-tags="${i}"></div>
+      </div>
+      <div class="form-group"><label>Descrição</label><textarea data-prod-desc="${i}">${esc(p.desc)}</textarea></div>
+    </div>
+  `).join('');
+}
+
+function collectProducts() {
+  content.products = [];
+  document.querySelectorAll('[data-prod-name]').forEach((el, i) => {
+    content.products.push({
+      code: document.querySelector(`[data-prod-code="${i}"]`)?.value || '',
+      name: el.value,
+      desc: document.querySelector(`[data-prod-desc="${i}"]`)?.value || '',
+      tags: document.querySelector(`[data-prod-tags="${i}"]`)?.value || '',
+    });
+  });
+}
+
+function addProduct() { content.products.push({ code: '', name: '', desc: '', tags: '' }); renderProducts(); }
+function removeProduct(i) { content.products.splice(i, 1); renderProducts(); }
+
+function renderPricing() {
+  const container = document.getElementById('pricing-list');
+  const plans = content.pricing || [];
+  container.innerHTML = plans.map((p, i) => `
+    <div class="card" style="${p.featured ? 'border-color:var(--accent)' : ''}">
+      <div class="card-header"><h3>${esc(p.name)}</h3>
+        <label style="font-size:.8rem;color:var(--muted)"><input type="checkbox" ${p.featured ? 'checked' : ''} data-plan-featured="${i}"> Destacado</label>
+      </div>
+      <div class="grid-3">
+        <div class="form-group"><label>Nome</label><input type="text" value="${esc(p.name)}" data-plan-name="${i}"></div>
+        <div class="form-group"><label>Preço</label><input type="text" value="${esc(p.price)}" data-plan-price="${i}"></div>
+        <div class="form-group"><label>Período</label><input type="text" value="${esc(p.period)}" data-plan-period="${i}"></div>
+      </div>
+      <div class="form-group"><label>Nota</label><input type="text" value="${esc(p.note)}" data-plan-note="${i}"></div>
+      <div class="form-group"><label>Features (uma por linha)</label><textarea data-plan-features="${i}" rows="6">${(p.features || []).join('\n')}</textarea></div>
+      <div class="form-group"><label>Texto do botão</label><input type="text" value="${esc(p.cta)}" data-plan-cta="${i}"></div>
+    </div>
+  `).join('');
+}
+
+function collectPricing() {
+  content.pricing = [];
+  document.querySelectorAll('[data-plan-name]').forEach((el, i) => {
+    content.pricing.push({
+      name: el.value,
+      price: document.querySelector(`[data-plan-price="${i}"]`)?.value || '',
+      period: document.querySelector(`[data-plan-period="${i}"]`)?.value || '',
+      note: document.querySelector(`[data-plan-note="${i}"]`)?.value || '',
+      featured: document.querySelector(`[data-plan-featured="${i}"]`)?.checked || false,
+      features: (document.querySelector(`[data-plan-features="${i}"]`)?.value || '').split('\n').filter(l => l.trim()),
+      cta: document.querySelector(`[data-plan-cta="${i}"]`)?.value || '',
+    });
+  });
+}
+
+function renderTestimonials() {
+  const container = document.getElementById('testimonials-list');
+  const items = content.testimonials || [];
+  container.innerHTML = items.map((t, i) => `
+    <div class="card">
+      <div class="card-header"><h3>${esc(t.name)}</h3><button class="btn btn-danger btn-sm" onclick="removeTestimonial(${i})">Remover</button></div>
+      <div class="grid-3">
+        <div class="form-group"><label>Nome</label><input type="text" value="${esc(t.name)}" data-test-name="${i}"></div>
+        <div class="form-group"><label>Cargo</label><input type="text" value="${esc(t.role)}" data-test-role="${i}"></div>
+        <div class="form-group"><label>Iniciais</label><input type="text" value="${esc(t.initials)}" data-test-initials="${i}"></div>
+      </div>
+      <div class="form-group"><label>Depoimento</label><textarea data-test-quote="${i}" rows="4">${esc(t.quote)}</textarea></div>
+    </div>
+  `).join('');
+}
+
+function collectTestimonials() {
+  content.testimonials = [];
+  document.querySelectorAll('[data-test-name]').forEach((el, i) => {
+    content.testimonials.push({
+      name: el.value,
+      role: document.querySelector(`[data-test-role="${i}"]`)?.value || '',
+      initials: document.querySelector(`[data-test-initials="${i}"]`)?.value || '',
+      quote: document.querySelector(`[data-test-quote="${i}"]`)?.value || '',
+    });
+  });
+}
+
+function addTestimonial() { content.testimonials.push({ name: '', role: '', initials: '', quote: '' }); renderTestimonials(); }
+function removeTestimonial(i) { content.testimonials.splice(i, 1); renderTestimonials(); }
+
+// ═══ Render / Collect all ═══
+function renderAll() {
+  renderBindings();
+  renderHeroStats();
+  renderProducts();
+  renderPricing();
+  renderTestimonials();
+}
+
+function collectAll() {
+  collectBindings();
+  collectStats();
+  collectProducts();
+  collectPricing();
+  collectTestimonials();
+}
+
+// ═══ Navigation ═══
+document.querySelectorAll('.sidebar a[data-section]').forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
+    link.classList.add('active');
+    document.querySelectorAll('[id^="section-"]').forEach(s => s.style.display = 'none');
+    document.getElementById('section-' + link.dataset.section).style.display = '';
+  });
+});
+
+// ═══ Helpers ═══
+function esc(s) { return (s || '').replace(/"/g, '&quot;').replace(/</g, '&lt;'); }
+function showStatus(msg) { document.getElementById('save-status').textContent = msg; }
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>

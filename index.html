@@ -768,6 +768,64 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     }
   });
 });
+
+// ═══ Dynamic content from /api/content ═══
+(async function loadDynamicContent() {
+  try {
+    const res = await fetch('/api/content');
+    if (!res.ok) return;
+    const c = await res.json();
+
+    // SEO
+    if (c.seo?.title) document.title = c.seo.title;
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc && c.seo?.description) metaDesc.content = c.seo.description;
+
+    // Hero
+    if (c.hero) {
+      const heroEl = document.querySelector('.hero-content');
+      if (heroEl) {
+        const badge = heroEl.querySelector('.hero-badge');
+        if (badge) badge.childNodes[badge.childNodes.length - 1].textContent = c.hero.badge || '';
+        const h1 = heroEl.querySelector('h1');
+        if (h1) h1.innerHTML = `${c.hero.title_line1 || ''}<br><span class="accent">${c.hero.title_accent || ''}</span> ${c.hero.title_line2 || ''}`;
+        const p = heroEl.querySelector('p');
+        if (p) p.textContent = c.hero.description || '';
+        const btns = heroEl.querySelectorAll('.hero-actions a');
+        if (btns[0] && c.hero.cta_primary) btns[0].textContent = c.hero.cta_primary;
+        if (btns[1] && c.hero.cta_secondary) btns[1].textContent = c.hero.cta_secondary;
+      }
+      // Stats
+      if (c.hero.stats) {
+        const statsEl = document.querySelector('.hero-stats');
+        if (statsEl) {
+          statsEl.innerHTML = c.hero.stats.map(s =>
+            `<div class="hero-stat"><div class="number">${s.number}</div><div class="label">${s.label}</div></div>`
+          ).join('');
+        }
+      }
+    }
+
+    // Contact/CTA
+    if (c.contact) {
+      const ctaTitle = document.querySelector('.cta-section .section-title');
+      if (ctaTitle) ctaTitle.textContent = c.contact.cta_title || '';
+      const ctaDesc = document.querySelector('.cta-section .section-desc');
+      if (ctaDesc) ctaDesc.textContent = c.contact.cta_desc || '';
+      const waLink = document.querySelector('.cta-section .btn-primary');
+      if (waLink && c.contact.whatsapp_number) {
+        waLink.href = `https://wa.me/${c.contact.whatsapp_number}?text=${encodeURIComponent(c.contact.whatsapp_message || '')}`;
+      }
+      const emailLink = document.querySelector('.cta-section .btn-secondary');
+      if (emailLink && c.contact.email) {
+        emailLink.href = `mailto:${c.contact.email}`;
+        emailLink.textContent = c.contact.email;
+      }
+    }
+  } catch (e) {
+    // Silently fail — static content remains
+  }
+})();
 </script>
 
 </body>
