@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NYXACORE — Infraestrutura Inteligente para Provedores de Internet</title>
+<meta name="description" content="Suite completa de software SaaS para ISPs: monitoramento, gestão de CPE, BI, mapas de rede, QoS, hotspot, chatbot IA, e mais. Tudo integrado, tudo profissional.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg-deep:#050a08;
+  --bg-card:#0a1410;
+  --bg-card-hover:#0f1e18;
+  --border:#1a2f25;
+  --border-glow:#4ade8040;
+  --accent:#4ade80;
+  --accent-dim:#22c55e;
+  --accent-ghost:#4ade8012;
+  --text-primary:#e8f5ec;
+  --text-secondary:#7eb895;
+  --text-muted:#3d5e4d;
+  --font-display:'Outfit',sans-serif;
+  --font-mono:'JetBrains Mono',monospace;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{
+  font-family:var(--font-display);
+  background:var(--bg-deep);
+  color:var(--text-primary);
+  line-height:1.6;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:var(--accent);color:var(--bg-deep)}
+
+/* ═══ GRID BACKGROUND ═══ */
+.grid-bg{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:
+    linear-gradient(var(--border) 1px,transparent 1px),
+    linear-gradient(90deg,var(--border) 1px,transparent 1px);
+  background-size:80px 80px;
+  opacity:.15;
+  mask-image:radial-gradient(ellipse 80% 60% at 50% 30%,black 20%,transparent 70%);
+}
+
+/* ═══ GLOW ORB ═══ */
+.glow-orb{
+  position:fixed;width:600px;height:600px;border-radius:50%;
+  background:radial-gradient(circle,var(--accent) 0%,transparent 70%);
+  opacity:.04;filter:blur(80px);pointer-events:none;z-index:0;
+  top:-200px;left:50%;transform:translateX(-50%);
+}
+.glow-orb-2{
+  position:fixed;width:400px;height:400px;border-radius:50%;
+  background:radial-gradient(circle,#22d3ee 0%,transparent 70%);
+  opacity:.025;filter:blur(60px);pointer-events:none;z-index:0;
+  bottom:10%;right:-100px;
+}
+
+/* ═══ CONTAINER ═══ */
+.container{max-width:1200px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
+
+/* ═══ NAV ═══ */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  background:rgba(5,10,8,.85);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  transition:all .3s;
+}
+nav .container{
+  display:flex;align-items:center;justify-content:space-between;
+  height:72px;
+}
+.nav-logo{
+  font-family:var(--font-mono);font-weight:700;font-size:1.25rem;
+  letter-spacing:.08em;color:var(--accent);text-decoration:none;
+}
+.nav-logo span{color:var(--text-muted);font-weight:400}
+.nav-links{display:flex;gap:32px;align-items:center}
+.nav-links a{
+  color:var(--text-secondary);text-decoration:none;font-size:.875rem;
+  font-weight:500;transition:color .2s;letter-spacing:.02em;
+}
+.nav-links a:hover{color:var(--accent)}
+.nav-cta{
+  background:var(--accent);color:var(--bg-deep);
+  padding:10px 24px;border-radius:6px;font-weight:600;font-size:.875rem;
+  text-decoration:none;transition:all .2s;border:none;cursor:pointer;
+}
+.nav-cta:hover{background:#5ceb96;transform:translateY(-1px);box-shadow:0 4px 20px var(--border-glow)}
+.nav-hamburger{display:none;background:none;border:none;color:var(--accent);cursor:pointer;padding:8px}
+.nav-mobile{
+  display:none;position:fixed;top:72px;left:0;right:0;
+  background:rgba(5,10,8,.97);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  flex-direction:column;padding:24px;gap:16px;
+}
+.nav-mobile.open{display:flex}
+.nav-mobile a{color:var(--text-secondary);text-decoration:none;font-size:1rem;padding:8px 0}
+
+@media(max-width:768px){
+  .nav-links{display:none}
+  .nav-hamburger{display:block}
+}
+
+/* ═══ HERO ═══ */
+.hero{
+  min-height:100vh;display:flex;align-items:center;
+  padding-top:120px;padding-bottom:80px;
+  position:relative;
+}
+.hero-content{max-width:800px}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--font-mono);font-size:.75rem;
+  color:var(--accent);border:1px solid var(--border);
+  padding:6px 14px;border-radius:100px;margin-bottom:32px;
+  letter-spacing:.06em;
+  background:var(--accent-ghost);
+}
+.hero-badge::before{
+  content:'';width:6px;height:6px;border-radius:50%;
+  background:var(--accent);animation:pulse-dot 2s infinite;
+}
+@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.3}}
+
+.hero h1{
+  font-size:clamp(2.5rem,6vw,4.5rem);
+  font-weight:800;line-height:1.05;
+  letter-spacing:-.03em;margin-bottom:24px;
+}
+.hero h1 .accent{
+  background:linear-gradient(135deg,var(--accent),#22d3ee);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.hero p{
+  font-size:clamp(1rem,2vw,1.25rem);
+  color:var(--text-secondary);max-width:600px;
+  margin-bottom:40px;line-height:1.7;
+}
+.hero-actions{display:flex;gap:16px;flex-wrap:wrap}
+.btn-primary{
+  background:var(--accent);color:var(--bg-deep);
+  padding:14px 32px;border-radius:8px;font-weight:700;
+  font-size:1rem;text-decoration:none;transition:all .25s;
+  border:none;cursor:pointer;font-family:var(--font-display);
+}
+.btn-primary:hover{background:#5ceb96;transform:translateY(-2px);box-shadow:0 8px 30px var(--border-glow)}
+.btn-secondary{
+  background:transparent;color:var(--text-primary);
+  padding:14px 32px;border-radius:8px;font-weight:600;
+  font-size:1rem;text-decoration:none;transition:all .25s;
+  border:1px solid var(--border);font-family:var(--font-display);
+}
+.btn-secondary:hover{border-color:var(--accent);color:var(--accent)}
+
+.hero-stats{
+  display:flex;gap:48px;margin-top:64px;padding-top:32px;
+  border-top:1px solid var(--border);
+}
+.hero-stat .number{
+  font-family:var(--font-mono);font-size:2rem;font-weight:700;
+  color:var(--accent);
+}
+.hero-stat .label{
+  font-size:.8rem;color:var(--text-muted);margin-top:4px;
+  letter-spacing:.04em;text-transform:uppercase;
+}
+@media(max-width:640px){.hero-stats{gap:24px;flex-wrap:wrap}}
+
+/* ═══ SECTION COMMON ═══ */
+section{padding:120px 0}
+.section-label{
+  font-family:var(--font-mono);font-size:.75rem;
+  color:var(--accent);letter-spacing:.12em;
+  text-transform:uppercase;margin-bottom:16px;
+}
+.section-title{
+  font-size:clamp(1.75rem,4vw,3rem);font-weight:700;
+  letter-spacing:-.02em;margin-bottom:20px;line-height:1.15;
+}
+.section-desc{
+  color:var(--text-secondary);font-size:1.1rem;
+  max-width:600px;margin-bottom:56px;
+}
+
+/* ═══ PRODUCTS GRID ═══ */
+.products-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(340px,1fr));
+  gap:20px;
+}
+.product-card{
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:12px;padding:32px;
+  transition:all .35s cubic-bezier(.4,0,.2,1);
+  position:relative;overflow:hidden;
+}
+.product-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--accent),transparent);
+  opacity:0;transition:opacity .35s;
+}
+.product-card:hover{
+  border-color:var(--accent-dim);
+  background:var(--bg-card-hover);
+  transform:translateY(-4px);
+  box-shadow:0 12px 40px rgba(74,222,128,.06);
+}
+.product-card:hover::before{opacity:1}
+
+.product-icon{
+  width:48px;height:48px;border-radius:10px;
+  background:var(--accent-ghost);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-mono);font-size:.8rem;font-weight:700;
+  color:var(--accent);margin-bottom:20px;
+  letter-spacing:.05em;
+}
+.product-card h3{
+  font-size:1.25rem;font-weight:700;margin-bottom:8px;
+  letter-spacing:-.01em;
+}
+.product-card p{
+  color:var(--text-secondary);font-size:.9rem;line-height:1.65;
+  margin-bottom:16px;
+}
+.product-tag{
+  font-family:var(--font-mono);font-size:.7rem;
+  color:var(--text-muted);letter-spacing:.06em;
+  text-transform:uppercase;
+}
+
+/* ═══ FEATURES ═══ */
+.features-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:32px;
+}
+.feature-item{
+  padding:24px;border-left:2px solid var(--border);
+  transition:border-color .3s;
+}
+.feature-item:hover{border-color:var(--accent)}
+.feature-item h4{
+  font-size:1.05rem;font-weight:600;margin-bottom:8px;
+}
+.feature-item p{
+  color:var(--text-secondary);font-size:.9rem;line-height:1.65;
+}
+
+/* ═══ PRICING ═══ */
+.pricing-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+  gap:24px;align-items:start;
+}
+.pricing-card{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:12px;padding:40px 32px;
+  transition:all .3s;
+}
+.pricing-card.featured{
+  border-color:var(--accent-dim);
+  background:linear-gradient(180deg,rgba(74,222,128,.04),var(--bg-card));
+  transform:scale(1.02);
+  box-shadow:0 0 60px rgba(74,222,128,.06);
+}
+.pricing-card .plan-name{
+  font-family:var(--font-mono);font-size:.8rem;
+  color:var(--accent);letter-spacing:.1em;
+  text-transform:uppercase;margin-bottom:8px;
+}
+.pricing-card .price{
+  font-size:2.5rem;font-weight:800;margin-bottom:4px;
+  letter-spacing:-.03em;
+}
+.pricing-card .price span{font-size:1rem;color:var(--text-muted);font-weight:400}
+.pricing-card .price-note{
+  color:var(--text-muted);font-size:.85rem;margin-bottom:24px;
+}
+.pricing-card .divider{
+  height:1px;background:var(--border);margin:24px 0;
+}
+.pricing-card ul{list-style:none;margin-bottom:32px}
+.pricing-card li{
+  padding:8px 0;color:var(--text-secondary);font-size:.9rem;
+  display:flex;align-items:flex-start;gap:10px;
+}
+.pricing-card li::before{
+  content:'✓';color:var(--accent);font-weight:700;
+  flex-shrink:0;margin-top:1px;
+}
+.pricing-card .btn-primary{display:block;text-align:center;width:100%}
+.pricing-card .btn-secondary{display:block;text-align:center;width:100%}
+
+/* ═══ TESTIMONIALS ═══ */
+.testimonials-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));
+  gap:24px;
+}
+.testimonial-card{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:12px;padding:32px;
+}
+.testimonial-card blockquote{
+  color:var(--text-secondary);font-size:.95rem;
+  line-height:1.75;font-style:italic;margin-bottom:20px;
+}
+.testimonial-author{display:flex;align-items:center;gap:12px}
+.testimonial-avatar{
+  width:40px;height:40px;border-radius:50%;
+  background:var(--accent-ghost);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-mono);font-size:.8rem;font-weight:700;
+  color:var(--accent);
+}
+.testimonial-author .name{font-weight:600;font-size:.9rem}
+.testimonial-author .role{color:var(--text-muted);font-size:.8rem}
+
+/* ═══ CTA ═══ */
+.cta-section{
+  text-align:center;
+  background:linear-gradient(180deg,transparent,rgba(74,222,128,.03),transparent);
+  padding:120px 0;
+}
+.cta-section .section-title{max-width:700px;margin:0 auto 20px}
+.cta-section .section-desc{margin:0 auto 40px;text-align:center}
+
+/* ═══ FOOTER ═══ */
+footer{
+  border-top:1px solid var(--border);padding:48px 0 32px;
+}
+.footer-grid{
+  display:grid;grid-template-columns:2fr 1fr 1fr 1fr;
+  gap:40px;margin-bottom:40px;
+}
+.footer-brand .nav-logo{display:block;margin-bottom:12px}
+.footer-brand p{color:var(--text-muted);font-size:.85rem;max-width:280px;line-height:1.7}
+.footer-col h4{
+  font-family:var(--font-mono);font-size:.7rem;
+  color:var(--text-muted);letter-spacing:.12em;
+  text-transform:uppercase;margin-bottom:16px;
+}
+.footer-col a{
+  display:block;color:var(--text-secondary);
+  text-decoration:none;font-size:.875rem;padding:4px 0;
+  transition:color .2s;
+}
+.footer-col a:hover{color:var(--accent)}
+.footer-bottom{
+  display:flex;justify-content:space-between;align-items:center;
+  padding-top:24px;border-top:1px solid var(--border);
+  color:var(--text-muted);font-size:.8rem;
+}
+@media(max-width:768px){
+  .footer-grid{grid-template-columns:1fr 1fr;gap:32px}
+}
+@media(max-width:480px){
+  .footer-grid{grid-template-columns:1fr}
+}
+
+/* ═══ ANIMATIONS ═══ */
+.fade-up{
+  opacity:0;transform:translateY(30px);
+  transition:opacity .7s cubic-bezier(.4,0,.2,1),transform .7s cubic-bezier(.4,0,.2,1);
+}
+.fade-up.visible{opacity:1;transform:translateY(0)}
+
+@keyframes float{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-8px)}
+}
+
+/* ═══ SCROLL INDICATOR ═══ */
+.scroll-indicator{
+  position:absolute;bottom:40px;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  color:var(--text-muted);font-size:.7rem;letter-spacing:.1em;
+  text-transform:uppercase;font-family:var(--font-mono);
+  animation:float 3s ease-in-out infinite;
+}
+.scroll-indicator::after{
+  content:'';width:1px;height:32px;
+  background:linear-gradient(180deg,var(--text-muted),transparent);
+}
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+<div class="glow-orb"></div>
+<div class="glow-orb-2"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="container">
+    <a href="#" class="nav-logo">NYXA<span>CORE</span></a>
+    <div class="nav-links">
+      <a href="#produtos">Produtos</a>
+      <a href="#features">Diferenciais</a>
+      <a href="#precos">Preços</a>
+      <a href="#depoimentos">Clientes</a>
+      <a href="#contato" class="nav-cta">Falar com especialista</a>
+    </div>
+    <button class="nav-hamburger" onclick="document.querySelector('.nav-mobile').classList.toggle('open')" aria-label="Menu">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+    </button>
+  </div>
+  <div class="nav-mobile">
+    <a href="#produtos" onclick="this.parentElement.classList.remove('open')">Produtos</a>
+    <a href="#features" onclick="this.parentElement.classList.remove('open')">Diferenciais</a>
+    <a href="#precos" onclick="this.parentElement.classList.remove('open')">Preços</a>
+    <a href="#depoimentos" onclick="this.parentElement.classList.remove('open')">Clientes</a>
+    <a href="#contato" class="nav-cta" style="text-align:center;display:block" onclick="this.parentElement.classList.remove('open')">Falar com especialista</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-badge fade-up">Sistema operacional para provedores</div>
+      <h1 class="fade-up" style="transition-delay:.1s">
+        Infraestrutura<br><span class="accent">inteligente</span> para<br>quem conecta o Brasil.
+      </h1>
+      <p class="fade-up" style="transition-delay:.2s">
+        Suite completa de software para ISPs — monitoramento, gestão de CPE, business intelligence, QoS, mapas de rede, notificações, chatbot IA e muito mais. Tudo integrado. Tudo sob controle.
+      </p>
+      <div class="hero-actions fade-up" style="transition-delay:.3s">
+        <a href="#contato" class="btn-primary">Agendar demonstração</a>
+        <a href="#produtos" class="btn-secondary">Conhecer os produtos</a>
+      </div>
+      <div class="hero-stats fade-up" style="transition-delay:.4s">
+        <div class="hero-stat">
+          <div class="number">9</div>
+          <div class="label">Produtos integrados</div>
+        </div>
+        <div class="hero-stat">
+          <div class="number">24/7</div>
+          <div class="label">Monitoramento real-time</div>
+        </div>
+        <div class="hero-stat">
+          <div class="number">ML</div>
+          <div class="label">Previsão inteligente</div>
+        </div>
+        <div class="hero-stat">
+          <div class="number">SaaS</div>
+          <div class="label">Instalação em minutos</div>
+        </div>
+      </div>
+    </div>
+    <div class="scroll-indicator">scroll</div>
+  </div>
+</section>
+
+<!-- PRODUTOS -->
+<section id="produtos">
+  <div class="container">
+    <div class="section-label fade-up">Ecossistema</div>
+    <h2 class="section-title fade-up">9 produtos. Uma plataforma.</h2>
+    <p class="section-desc fade-up">Cada produto resolve um problema crítico do seu provedor. Juntos, eles formam o sistema operacional mais completo para ISPs do Brasil.</p>
+
+    <div class="products-grid">
+
+      <div class="product-card fade-up">
+        <div class="product-icon">NW</div>
+        <h3>NyxaWatch</h3>
+        <p>Monitoramento completo da rede — dashboards customizáveis, mapas interativos com Leaflet, NetFlow, detecção de anomalias com ML, alertas preditivos e 14 tipos de widgets.</p>
+        <div class="product-tag">NMS · Zabbix Wrapper · Prophet ML</div>
+      </div>
+
+      <div class="product-card fade-up" style="transition-delay:.05s">
+        <div class="product-icon">NA</div>
+        <h3>NyxaACS</h3>
+        <p>Gestão TR-069 de CPEs com auto-provisionamento, autocura inteligente via IA, e integração com GenieACS. Configure milhares de roteadores em segundos.</p>
+        <div class="product-tag">TR-069 · GenieACS · Autocura IA</div>
+      </div>
+
+      <div class="product-card fade-up" style="transition-delay:.1s">
+        <div class="product-icon">NI</div>
+        <h3>NyxaInsight</h3>
+        <p>Business Intelligence desenhado para ISPs. Conecta com HubSoft, IXC, SGP e MK-Auth. Painéis de churn, financeiro, comercial e geográfico.</p>
+        <div class="product-tag">BI · Multi-ERP · Analytics</div>
+      </div>
+
+      <div class="product-card fade-up" style="transition-delay:.15s">
+        <div class="product-icon">NM</div>
+        <h3>NyxaMap</h3>
+        <p>Mapeamento de rede óptica — fusões, splitters, CTOs, cabos. Visualize toda a infraestrutura FTTH no mapa com viabilidade e documentação automática.</p>
+        <div class="product-tag">FTTH · Mapeamento · GIS</div>
+      </div>
+
+      <div class="product-card fade-up" style="transition-delay:.2s">
+        <div class="product-icon">NF</div>
+        <h3>NyxaFlow</h3>
+        <p>Otimização de QoS e tráfego com CAKE, BBR e eBPF/XDP. Controle fino por assinante com DPI, detecção de DoS e relatórios de throughput em tempo real.</p>
+        <div class="product-tag">QoS · eBPF · DPI · Traffic Shaping</div>
+      </div>
+
+      <div class="product-card fade-up" style="transition-delay:.25s">
+        <div class="product-icon">NH</div>
+        <h3>NyxaHotspot</h3>
+        <p>Hotspot centralizado multi-tenant com FreeRADIUS e MikroTik. Portal captivo personalizável, vouchers, relatórios de uso e controle por ISP.</p>
+        <div class="product-tag">WiFi · FreeRADIUS · Multi-tenant</div>
+      </div>
+
+      <div class="product-card fade-up" style="transition-delay:.3s">
+        <div class="product-icon">NB</div>
+        <h3>NyxaBot</h3>
+        <p>Atendente IA multi-canal — WhatsApp, Telegram e integração direta com HubSoft. Persona "Layla" resolve dúvidas, abre OS e consulta faturas automaticamente.</p>
+        <div class="product-tag">IA · WhatsApp · HubSoft · Layla</div>
+      </div>
+
+      <div class="product-card fade-up" style="transition-delay:.35s">
+        <div class="product-icon">NO</div>
+        <h3>NyxaOrion</h3>
+        <p>Provisionamento e automação de rede — orquestra configurações, deploys e atualizações em larga escala com workflows visuais.</p>
+        <div class="product-tag">Provisioning · Automation · Workflows</div>
+      </div>
+
+      <div class="product-card fade-up" style="transition-delay:.4s">
+        <div class="product-icon">NX</div>
+        <h3>NyxaFlix</h3>
+        <p>Plataforma de cursos no formato Netflix — área de alunos, certificados, progresso, streaming de vídeo. Ideal para treinamento de equipe e clientes.</p>
+        <div class="product-tag">E-Learning · Streaming · Certificados</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features" style="background:linear-gradient(180deg,transparent,rgba(74,222,128,.015),transparent)">
+  <div class="container">
+    <div class="section-label fade-up">Por que NYXACORE</div>
+    <h2 class="section-title fade-up">Construído para quem opera de verdade.</h2>
+    <p class="section-desc fade-up">Não é mais um dashboard bonito. É infraestrutura que prevê problemas antes deles acontecerem.</p>
+
+    <div class="features-grid">
+      <div class="feature-item fade-up">
+        <h4>Instalação em 5 minutos</h4>
+        <p>Um comando <code style="color:var(--accent);font-family:var(--font-mono);font-size:.85em">bash setup-vps.sh</code> e tudo sobe — Zabbix, banco, frontend, collector. Setup wizard guiado pro resto.</p>
+      </div>
+      <div class="feature-item fade-up">
+        <h4>SaaS multi-VPS</h4>
+        <p>Instale em qualquer servidor, qualquer IP. Sem hardcode, sem dependência de infraestrutura específica. Cada cliente tem sua instância isolada.</p>
+      </div>
+      <div class="feature-item fade-up">
+        <h4>ML preditivo integrado</h4>
+        <p>Prophet, Holt-Winters e Isolation Forest treinando sobre seus dados. Alertas preditivos avisam antes do link saturar ou do equipamento falhar.</p>
+      </div>
+      <div class="feature-item fade-up">
+        <h4>5 canais de notificação</h4>
+        <p>Telegram, Email, WhatsApp (Evolution API), Webhook genérico e SMS. Escalonamento automático com plantão rotativo e silenciamento por horário.</p>
+      </div>
+      <div class="feature-item fade-up">
+        <h4>Multi-site hierárquico</h4>
+        <p>Organize sua rede em árvore: Estado → Cidade → POP → Rack. Cada site pode ter seu próprio Zabbix remoto. Permissões por site com herança.</p>
+      </div>
+      <div class="feature-item fade-up">
+        <h4>Licenciamento flexível</h4>
+        <p>Licença por número de dispositivos monitorados. Trial de 14 dias grátis. Planos que crescem com o provedor — do starter ao enterprise.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="precos">
+  <div class="container">
+    <div class="section-label fade-up">Investimento</div>
+    <h2 class="section-title fade-up">Planos que cabem no seu provedor.</h2>
+    <p class="section-desc fade-up">Comece com um trial gratuito de 14 dias. Sem compromisso, sem cartão de crédito.</p>
+
+    <div class="pricing-grid">
+
+      <div class="pricing-card fade-up">
+        <div class="plan-name">Starter</div>
+        <div class="price">R$ 297<span>/mês</span></div>
+        <div class="price-note">Até 500 dispositivos monitorados</div>
+        <div class="divider"></div>
+        <ul>
+          <li>NyxaWatch (monitoramento completo)</li>
+          <li>Dashboards customizáveis</li>
+          <li>Mapas de rede canvas</li>
+          <li>Alertas por Telegram + Email</li>
+          <li>1 site (POP único)</li>
+          <li>Suporte por email</li>
+        </ul>
+        <a href="#contato" class="btn-secondary">Começar trial grátis</a>
+      </div>
+
+      <div class="pricing-card featured fade-up" style="transition-delay:.05s">
+        <div class="plan-name">Professional</div>
+        <div class="price">R$ 697<span>/mês</span></div>
+        <div class="price-note">Até 5.000 dispositivos</div>
+        <div class="divider"></div>
+        <ul>
+          <li>Tudo do Starter +</li>
+          <li>NyxaACS (gestão TR-069)</li>
+          <li>NyxaInsight (BI)</li>
+          <li>NetFlow + detecção de anomalias</li>
+          <li>WhatsApp + Webhook + SMS</li>
+          <li>Multi-site (até 10 sites)</li>
+          <li>ML forecasting básico</li>
+          <li>Suporte prioritário</li>
+        </ul>
+        <a href="#contato" class="btn-primary">Começar trial grátis</a>
+      </div>
+
+      <div class="pricing-card fade-up" style="transition-delay:.1s">
+        <div class="plan-name">Enterprise</div>
+        <div class="price">Sob consulta</div>
+        <div class="price-note">Dispositivos ilimitados</div>
+        <div class="divider"></div>
+        <ul>
+          <li>Tudo do Professional +</li>
+          <li>Todos os 9 produtos</li>
+          <li>Sites ilimitados + federação</li>
+          <li>ML avançado + AI Insights</li>
+          <li>Integração ERP customizada</li>
+          <li>SLA dedicado + gerente de conta</li>
+          <li>Treinamento presencial</li>
+          <li>Instalação assistida</li>
+        </ul>
+        <a href="#contato" class="btn-secondary">Falar com especialista</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="depoimentos" style="background:linear-gradient(180deg,transparent,rgba(74,222,128,.015),transparent)">
+  <div class="container">
+    <div class="section-label fade-up">Quem já usa</div>
+    <h2 class="section-title fade-up">Provedores que operam no próximo nível.</h2>
+
+    <div class="testimonials-grid">
+
+      <div class="testimonial-card fade-up">
+        <blockquote>"Antes a gente levava horas pra descobrir onde o problema tava. Com o NyxaWatch, o sistema avisa antes do cliente ligar reclamando. O ML previu a saturação do uplink com 3 semanas de antecedência."</blockquote>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">RC</div>
+          <div>
+            <div class="name">Ricardo Costa</div>
+            <div class="role">CTO — FibraNet Telecom</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card fade-up" style="transition-delay:.05s">
+        <blockquote>"O NyxaACS resolveu o pesadelo de configurar CPE. O auto-provisionamento com autocura de IA reduziu nossos chamados técnicos em 60%. A equipe finalmente consegue focar no que importa."</blockquote>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">MS</div>
+          <div>
+            <div class="name">Marina Silva</div>
+            <div class="role">Gerente de Operações — ConectaBR</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card fade-up" style="transition-delay:.1s">
+        <blockquote>"A NyxaBot Layla atende 80% dos chamados no WhatsApp sozinha. Os clientes adoram a velocidade. E o NyxaInsight mostrou que estávamos perdendo dinheiro em 3 planos que ninguém usava."</blockquote>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">PL</div>
+          <div>
+            <div class="name">Pedro Lima</div>
+            <div class="role">Diretor — VelozNet Internet</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="contato" class="cta-section">
+  <div class="container">
+    <div class="section-label fade-up">Próximo passo</div>
+    <h2 class="section-title fade-up">Pronto pra operar no próximo nível?</h2>
+    <p class="section-desc fade-up">Agende uma demonstração gratuita e veja a suite NYXACORE rodando com os dados do seu provedor. Sem compromisso.</p>
+    <div class="fade-up" style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
+      <a href="https://wa.me/5573999998888?text=Quero%20conhecer%20a%20NYXACORE" class="btn-primary" target="_blank" rel="noopener">WhatsApp direto</a>
+      <a href="mailto:contato@nyxacore.com.br" class="btn-secondary">contato@nyxacore.com.br</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="nav-logo">NYXA<span>CORE</span></a>
+        <p>Infraestrutura inteligente para provedores de internet. Software brasileiro para quem conecta o Brasil.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Produtos</h4>
+        <a href="#produtos">NyxaWatch</a>
+        <a href="#produtos">NyxaACS</a>
+        <a href="#produtos">NyxaInsight</a>
+        <a href="#produtos">NyxaMap</a>
+        <a href="#produtos">NyxaFlow</a>
+      </div>
+      <div class="footer-col">
+        <h4>Mais</h4>
+        <a href="#produtos">NyxaHotspot</a>
+        <a href="#produtos">NyxaBot</a>
+        <a href="#produtos">NyxaOrion</a>
+        <a href="#produtos">NyxaFlix</a>
+      </div>
+      <div class="footer-col">
+        <h4>Empresa</h4>
+        <a href="#precos">Preços</a>
+        <a href="#depoimentos">Clientes</a>
+        <a href="mailto:contato@nyxacore.com.br">Contato</a>
+        <a href="https://docs.nyxacore.com.br" target="_blank">Documentação</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 NYXACORE. Todos os direitos reservados.</span>
+      <span style="font-family:var(--font-mono);font-size:.7rem;color:var(--text-muted)">v1.0 · nyxacore.com.br</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Scroll reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+// Nav scroll effect
+let lastScroll = 0;
+window.addEventListener('scroll', () => {
+  const nav = document.querySelector('nav');
+  const scroll = window.scrollY;
+  if (scroll > 100) {
+    nav.style.borderBottomColor = 'var(--border)';
+    nav.style.background = 'rgba(5,10,8,.95)';
+  } else {
+    nav.style.background = 'rgba(5,10,8,.85)';
+  }
+  lastScroll = scroll;
+});
+
+// Smooth scroll for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function(e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+</script>
+
+</body>
+</html>
