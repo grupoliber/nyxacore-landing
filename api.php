@@ -95,6 +95,19 @@ function getDefaultContent() {
                 ['number' => 'SaaS', 'label' => 'Instalação em minutos'],
             ],
         ],
+        'features' => [
+            'tag' => 'Por que NYXACORE',
+            'title' => 'Construído para quem opera de verdade.',
+            'description' => 'Não é mais um dashboard bonito. É infraestrutura que prevê problemas antes deles acontecerem.',
+            'items' => [
+                ['icon' => '⚡', 'title' => 'Instalação em 5 minutos', 'description' => 'Um comando e tudo sobe — Zabbix, banco, frontend, collector. Setup wizard guia o resto.'],
+                ['icon' => '☁️', 'title' => 'SaaS multi-VPS', 'description' => 'Instale em qualquer servidor. Sem hardcode, sem dependência. Cada cliente isolado.'],
+                ['icon' => '🧠', 'title' => 'ML preditivo integrado', 'description' => 'Prophet, Holt-Winters e Isolation Forest treinando sobre seus dados. Alertas antes do problema.'],
+                ['icon' => '📱', 'title' => '5 canais de notificação', 'description' => 'Telegram, Email, WhatsApp, Webhook e SMS. Escalonamento automático com plantão rotativo.'],
+                ['icon' => '🌐', 'title' => 'Multi-site hierárquico', 'description' => 'Organize em árvore: Estado → Cidade → POP → Rack. Cada site com seu Zabbix remoto.'],
+                ['icon' => '🔑', 'title' => 'Licenciamento flexível', 'description' => 'Licença por dispositivos. Trial grátis 14 dias. Planos que crescem com o provedor.'],
+            ],
+        ],
         'products' => [
             ['code' => 'NW', 'name' => 'NyxaWatch', 'desc' => 'Monitoramento completo da rede — dashboards customizáveis, mapas interativos com Leaflet, NetFlow, detecção de anomalias com ML, alertas preditivos e 14 tipos de widgets.', 'tags' => 'NMS · Zabbix Wrapper · Prophet ML'],
             ['code' => 'NA', 'name' => 'NyxaACS', 'desc' => 'Gestão TR-069 de CPEs com auto-provisionamento, autocura inteligente via IA, e integração com GenieACS.', 'tags' => 'TR-069 · GenieACS · Autocura IA'],

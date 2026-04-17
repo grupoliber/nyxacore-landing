@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#050a08;--card:#0a1410;--border:#1a2f25;--accent:#4ade80;--text:#e8f5ec;--muted:#7eb895;--dim:#3d5e4d}
+:root{--bg:#0f172a;--card:#1e293b;--border:#334155;--accent:#0ea5e9;--text:#e2e8f0;--muted:#94a3b8;--dim:#64748b}
 body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 ::selection{background:var(--accent);color:var(--bg)}
 
@@ -90,6 +90,7 @@ textarea{min-height:80px}
     <a href="#" data-section="products">Produtos</a>
     <a href="#" data-section="pricing">Preços</a>
     <a href="#" data-section="testimonials">Depoimentos</a>
+    <a href="#" data-section="features">Diferenciais</a>
     <a href="#" data-section="contact">Contato / CTA</a>
     <a href="#" data-section="seo">SEO</a>
     <a href="#" data-section="security">Segurança</a>
@@ -137,6 +138,19 @@ textarea{min-height:80px}
       <h2>Depoimentos</h2>
       <div id="testimonials-list"></div>
       <button class="btn btn-outline btn-sm" onclick="addTestimonial()" style="margin-top:8px">+ Adicionar depoimento</button>
+    </div>
+
+    <!-- FEATURES -->
+    <div id="section-features" style="display:none">
+      <h2>Diferenciais</h2>
+      <div class="card" style="margin-bottom:20px">
+        <div class="form-group"><label>Subtítulo da seção</label><input type="text" data-bind="features.tag"></div>
+        <div class="form-group"><label>Título</label><input type="text" data-bind="features.title"></div>
+        <div class="form-group"><label>Descrição</label><textarea data-bind="features.description"></textarea></div>
+      </div>
+      <h3 style="margin:16px 0 12px;font-size:.95rem">Cards de diferenciais</h3>
+      <div id="features-list" class="inline-list"></div>
+      <button class="btn btn-outline btn-sm" onclick="addFeature()" style="margin-top:8px">+ Adicionar diferencial</button>
     </div>
 
     <!-- CONTACT -->
@@ -346,6 +360,37 @@ function collectProducts() {
 function addProduct() { content.products.push({ code: '', name: '', desc: '', tags: '' }); renderProducts(); }
 function removeProduct(i) { content.products.splice(i, 1); renderProducts(); }
 
+function renderFeatures() {
+  const container = document.getElementById('features-list');
+  const features = content.features?.items || [];
+  container.innerHTML = features.map((f, i) => `
+    <div class="card">
+      <div class="card-header"><h3>${esc(f.title) || 'Diferencial ' + (i + 1)}</h3><button class="btn btn-danger btn-sm" onclick="removeFeature(${i})">Remover</button></div>
+      <div class="grid-3">
+        <div class="form-group"><label>Emoji/Ícone</label><input type="text" value="${esc(f.icon)}" data-feat-icon="${i}" placeholder="⚡"></div>
+        <div class="form-group"><label>Título</label><input type="text" value="${esc(f.title)}" data-feat-title="${i}"></div>
+        <div class="form-group"><label></label></div>
+      </div>
+      <div class="form-group"><label>Descrição</label><textarea data-feat-desc="${i}">${esc(f.description)}</textarea></div>
+    </div>
+  `).join('');
+}
+
+function collectFeatures() {
+  if (!content.features) content.features = {};
+  content.features.items = [];
+  document.querySelectorAll('[data-feat-title]').forEach((el, i) => {
+    content.features.items.push({
+      icon: document.querySelector(`[data-feat-icon="${i}"]`)?.value || '',
+      title: el.value,
+      description: document.querySelector(`[data-feat-desc="${i}"]`)?.value || '',
+    });
+  });
+}
+
+function addFeature() { if (!content.features) content.features = {}; if (!content.features.items) content.features.items = []; content.features.items.push({ icon: '', title: '', description: '' }); renderFeatures(); }
+function removeFeature(i) { content.features.items.splice(i, 1); renderFeatures(); }
+
 function renderPricing() {
   const container = document.getElementById('pricing-list');
   const plans = content.pricing || [];
@@ -417,6 +462,7 @@ function renderAll() {
   renderBindings();
   renderHeroStats();
   renderProducts();
+  renderFeatures();
   renderPricing();
   renderTestimonials();
 }
@@ -425,6 +471,7 @@ function collectAll() {
   collectBindings();
   collectStats();
   collectProducts();
+  collectFeatures();
   collectPricing();
   collectTestimonials();
 }
