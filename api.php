@@ -57,11 +57,15 @@ function getAuthToken() {
 }
 
 function readContent() {
+    $defaults = getDefaultContent();
     if (file_exists(CONTENT_FILE)) {
         $data = json_decode(file_get_contents(CONTENT_FILE), true);
-        if ($data) return $data;
+        if (is_array($data)) {
+            // Merge: saved data wins, defaults fill missing keys
+            return array_replace_recursive($defaults, $data);
+        }
     }
-    return getDefaultContent();
+    return $defaults;
 }
 
 function writeContent($data) {

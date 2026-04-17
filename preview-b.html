@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Preview B — Clean Light</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:#fafbfc;color:#1a1a2e;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+::selection{background:#1a56db;color:white}
+.badge-preview{position:fixed;top:0;left:0;right:0;z-index:999;background:#1a56db;text-align:center;padding:10px;font-size:.85rem;font-weight:600;color:white}
+
+nav{background:rgba(255,255,255,.9);backdrop-filter:blur(16px);border-bottom:1px solid #e5e7eb;padding:0 32px;position:fixed;top:40px;left:0;right:0;z-index:100;height:72px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-weight:800;font-size:1.3rem;color:#1a1a2e;letter-spacing:-.02em}
+.logo span{color:#1a56db}
+nav a{color:#6b7280;text-decoration:none;font-size:.9rem;font-weight:500;margin-left:28px}
+nav a:hover{color:#1a56db}
+.nav-btn{background:#1a56db;color:white;padding:10px 24px;border-radius:8px;font-weight:600;margin-left:28px}
+
+.hero{min-height:100vh;display:flex;align-items:center;padding:140px 48px 80px;background:linear-gradient(180deg,#f0f4ff 0%,#fafbfc 100%);position:relative}
+.hero::before{content:'';position:absolute;top:10%;right:5%;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(26,86,219,.06),transparent 70%);pointer-events:none}
+.hero-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;width:100%}
+.hero-text h1{font-size:3.5rem;font-weight:800;line-height:1.1;letter-spacing:-.03em;margin-bottom:24px;color:#1a1a2e}
+.hero-text h1 .accent{color:#1a56db}
+.hero-text p{color:#6b7280;font-size:1.1rem;line-height:1.7;margin-bottom:32px;max-width:480px}
+.hero-btns{display:flex;gap:12px}
+.hero-btns a{padding:14px 28px;border-radius:10px;font-weight:600;text-decoration:none;font-size:.95rem;transition:all .25s}
+.btn-solid{background:#1a56db;color:white}
+.btn-solid:hover{background:#1e40af;box-shadow:0 8px 24px rgba(26,86,219,.25);transform:translateY(-2px)}
+.btn-light{background:white;color:#1a1a2e;border:1px solid #e5e7eb}
+.btn-light:hover{border-color:#1a56db;color:#1a56db}
+
+.hero-image{position:relative}
+.hero-image img{width:100%;border-radius:16px;box-shadow:0 25px 60px rgba(0,0,0,.08);border:1px solid #e5e7eb}
+
+.stats{display:flex;gap:40px;margin-top:48px;padding-top:32px;border-top:1px solid #e5e7eb}
+.stat .num{font-size:1.75rem;font-weight:800;color:#1a56db}
+.stat .lbl{font-size:.75rem;color:#9ca3af;text-transform:uppercase;letter-spacing:.06em;margin-top:4px}
+
+section{padding:100px 48px}
+.section-inner{max-width:1200px;margin:0 auto}
+.tag{font-size:.75rem;font-weight:700;color:#1a56db;letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px}
+h2{font-size:2.5rem;font-weight:800;letter-spacing:-.02em;margin-bottom:20px;color:#1a1a2e}
+.desc{color:#6b7280;font-size:1.05rem;max-width:550px;margin-bottom:48px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.card{background:white;border:1px solid #e5e7eb;border-radius:14px;padding:28px;transition:all .3s}
+.card:hover{border-color:#1a56db;transform:translateY(-4px);box-shadow:0 12px 32px rgba(26,86,219,.08)}
+.card .icon{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#eff6ff,#dbeafe);display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;color:#1a56db;margin-bottom:16px}
+.card h3{font-size:1.1rem;font-weight:700;margin-bottom:8px;color:#1a1a2e}
+.card p{color:#6b7280;font-size:.88rem;line-height:1.6}
+
+@media(max-width:900px){.hero-inner{grid-template-columns:1fr}.hero-image{display:none}.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="badge-preview">🎨 Preview B — Clean Light + Azul Profissional + Fundo Claro</div>
+<nav>
+  <div class="logo">NYXA<span>CORE</span></div>
+  <div>
+    <a href="#">Produtos</a><a href="#">Preços</a><a href="#">Clientes</a>
+    <a href="#" class="nav-btn">Falar com especialista</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-text">
+      <h1>Infraestrutura<br><span class="accent">inteligente</span> para<br>provedores.</h1>
+      <p>Suite completa de software para ISPs — monitoramento, gestão de CPE, BI, mapas, QoS, notificações e chatbot IA. Tudo integrado.</p>
+      <div class="hero-btns">
+        <a href="#" class="btn-solid">Agendar demonstração</a>
+        <a href="#" class="btn-light">Conhecer produtos</a>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="num">9</div><div class="lbl">Produtos</div></div>
+        <div class="stat"><div class="num">24/7</div><div class="lbl">Real-time</div></div>
+        <div class="stat"><div class="num">ML</div><div class="lbl">Inteligente</div></div>
+      </div>
+    </div>
+    <div class="hero-image">
+      <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&h=600&fit=crop" alt="Network Operations">
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="section-inner">
+    <div class="tag">Ecossistema</div>
+    <h2>9 produtos. Uma plataforma.</h2>
+    <p class="desc">Cada produto resolve um problema crítico. Juntos, formam o sistema mais completo para ISPs.</p>
+    <div class="grid">
+      <div class="card"><div class="icon">NW</div><h3>NyxaWatch</h3><p>Monitoramento completo — dashboards, mapas, NetFlow, ML preditivo.</p></div>
+      <div class="card"><div class="icon">NA</div><h3>NyxaACS</h3><p>Gestão TR-069 com auto-provisionamento e autocura via IA.</p></div>
+      <div class="card"><div class="icon">NI</div><h3>NyxaInsight</h3><p>Business Intelligence conectando HubSoft, IXC, SGP e MK-Auth.</p></div>
+      <div class="card"><div class="icon">NM</div><h3>NyxaMap</h3><p>Mapeamento de rede óptica — fusões, splitters, CTOs no mapa.</p></div>
+      <div class="card"><div class="icon">NF</div><h3>NyxaFlow</h3><p>QoS com CAKE, BBR e eBPF. Controle por assinante com DPI.</p></div>
+      <div class="card"><div class="icon">NH</div><h3>NyxaHotspot</h3><p>WiFi centralizado com FreeRADIUS, vouchers e portal captivo.</p></div>
+    </div>
+  </div>
+</section>
+</body></html>

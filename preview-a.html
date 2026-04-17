@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Preview A — Corporate Navy</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#0f172a;color:#e2e8f0;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+::selection{background:#3b82f6;color:white}
+.badge-preview{position:fixed;top:0;left:0;right:0;z-index:999;background:linear-gradient(90deg,#3b82f6,#06b6d4);text-align:center;padding:10px;font-size:.85rem;font-weight:600;color:white}
+
+/* Nav */
+nav{background:rgba(15,23,42,.8);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,.06);padding:0 32px;position:fixed;top:40px;left:0;right:0;z-index:100;height:72px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-weight:800;font-size:1.3rem;letter-spacing:-.02em}
+.logo span{background:linear-gradient(135deg,#3b82f6,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+nav a{color:#94a3b8;text-decoration:none;font-size:.9rem;font-weight:500;margin-left:28px}
+.nav-btn{background:linear-gradient(135deg,#3b82f6,#06b6d4);color:white;padding:10px 24px;border-radius:8px;font-weight:600;margin-left:28px;transition:all .2s}
+.nav-btn:hover{opacity:.9;transform:translateY(-1px)}
+
+/* Hero */
+.hero{min-height:100vh;display:flex;align-items:center;padding:140px 48px 80px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-20%;right:-10%;width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(59,130,246,.12),transparent 70%);pointer-events:none}
+.hero::after{content:'';position:absolute;bottom:-20%;left:-10%;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(6,182,212,.08),transparent 70%);pointer-events:none}
+.hero-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;width:100%}
+.hero-text h1{font-size:3.5rem;font-weight:800;line-height:1.08;letter-spacing:-.03em;margin-bottom:24px}
+.hero-text h1 .grad{background:linear-gradient(135deg,#3b82f6,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-text p{color:#94a3b8;font-size:1.15rem;line-height:1.7;margin-bottom:32px;max-width:500px}
+.hero-btns{display:flex;gap:12px}
+.hero-btns a{padding:14px 28px;border-radius:10px;font-weight:600;text-decoration:none;font-size:.95rem;transition:all .25s}
+.btn-grad{background:linear-gradient(135deg,#3b82f6,#06b6d4);color:white}
+.btn-grad:hover{box-shadow:0 8px 30px rgba(59,130,246,.3);transform:translateY(-2px)}
+.btn-outline{border:1px solid rgba(255,255,255,.12);color:#e2e8f0}
+.btn-outline:hover{border-color:#3b82f6;color:#60a5fa}
+
+.hero-image{position:relative;border-radius:16px;overflow:hidden;box-shadow:0 25px 60px rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.06)}
+.hero-image img{width:100%;display:block;border-radius:16px}
+.hero-image .overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(59,130,246,.1),rgba(6,182,212,.05));pointer-events:none}
+
+/* Stats */
+.stats{display:flex;gap:40px;margin-top:48px;padding-top:32px;border-top:1px solid rgba(255,255,255,.06)}
+.stat .num{font-size:1.75rem;font-weight:800;background:linear-gradient(135deg,#3b82f6,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stat .lbl{font-size:.75rem;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-top:4px}
+
+/* Products */
+section{padding:100px 48px}
+.section-inner{max-width:1200px;margin:0 auto}
+.tag{font-size:.75rem;font-weight:600;color:#06b6d4;letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px}
+h2{font-size:2.5rem;font-weight:800;letter-spacing:-.02em;margin-bottom:20px}
+.desc{color:#94a3b8;font-size:1.05rem;max-width:550px;margin-bottom:48px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.card{background:rgba(30,41,59,.6);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:28px;transition:all .3s}
+.card:hover{border-color:rgba(59,130,246,.3);transform:translateY(-4px);box-shadow:0 12px 40px rgba(59,130,246,.08)}
+.card .icon{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,rgba(59,130,246,.15),rgba(6,182,212,.15));border:1px solid rgba(59,130,246,.2);display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;color:#60a5fa;margin-bottom:16px}
+.card h3{font-size:1.1rem;font-weight:700;margin-bottom:8px}
+.card p{color:#94a3b8;font-size:.88rem;line-height:1.6}
+
+@media(max-width:900px){.hero-inner{grid-template-columns:1fr}.hero-image{display:none}.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="badge-preview">🎨 Preview A — Corporate Navy + Gradiente Azul/Ciano + Imagem no Hero</div>
+<nav>
+  <div class="logo">NYXA<span>CORE</span></div>
+  <div>
+    <a href="#">Produtos</a><a href="#">Preços</a><a href="#">Clientes</a>
+    <a href="#" class="nav-btn">Falar com especialista</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-text">
+      <h1>Infraestrutura<br><span class="grad">inteligente</span> para<br>provedores.</h1>
+      <p>Suite completa de software para ISPs — monitoramento, gestão de CPE, BI, mapas, QoS, notificações e chatbot IA. Tudo integrado.</p>
+      <div class="hero-btns">
+        <a href="#" class="btn-grad">Agendar demonstração</a>
+        <a href="#" class="btn-outline">Conhecer produtos</a>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="num">9</div><div class="lbl">Produtos</div></div>
+        <div class="stat"><div class="num">24/7</div><div class="lbl">Real-time</div></div>
+        <div class="stat"><div class="num">ML</div><div class="lbl">Inteligente</div></div>
+      </div>
+    </div>
+    <div class="hero-image">
+      <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&h=600&fit=crop" alt="Data Center">
+      <div class="overlay"></div>
+    </div>
+  </div>
+</section>
+
+<section style="background:rgba(30,41,59,.3)">
+  <div class="section-inner">
+    <div class="tag">Ecossistema</div>
+    <h2>9 produtos. Uma plataforma.</h2>
+    <p class="desc">Cada produto resolve um problema crítico. Juntos, formam o sistema mais completo para ISPs.</p>
+    <div class="grid">
+      <div class="card"><div class="icon">NW</div><h3>NyxaWatch</h3><p>Monitoramento completo — dashboards, mapas, NetFlow, ML preditivo.</p></div>
+      <div class="card"><div class="icon">NA</div><h3>NyxaACS</h3><p>Gestão TR-069 com auto-provisionamento e autocura via IA.</p></div>
+      <div class="card"><div class="icon">NI</div><h3>NyxaInsight</h3><p>Business Intelligence conectando HubSoft, IXC, SGP e MK-Auth.</p></div>
+      <div class="card"><div class="icon">NM</div><h3>NyxaMap</h3><p>Mapeamento de rede óptica — fusões, splitters, CTOs no mapa.</p></div>
+      <div class="card"><div class="icon">NF</div><h3>NyxaFlow</h3><p>QoS com CAKE, BBR e eBPF. Controle por assinante com DPI.</p></div>
+      <div class="card"><div class="icon">NH</div><h3>NyxaHotspot</h3><p>WiFi centralizado com FreeRADIUS, vouchers e portal captivo.</p></div>
+    </div>
+  </div>
+</section>
+</body></html>

@@ -246,7 +246,7 @@ async function saveAll() {
   collectAll();
   try {
     const res = await fetch('/api.php?action=content', {
-      method: 'PUT',
+      method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
       body: JSON.stringify(content),
     });
