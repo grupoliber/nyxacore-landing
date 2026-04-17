@@ -92,8 +92,10 @@ textarea{min-height:80px}
     <a href="#" data-section="testimonials">Depoimentos</a>
     <a href="#" data-section="contact">Contato / CTA</a>
     <a href="#" data-section="seo">SEO</a>
+    <a href="#" data-section="security">Segurança</a>
     <hr style="border-color:var(--border);margin:16px 20px">
     <a href="/" target="_blank" style="color:var(--dim)">← Ver site</a>
+    <a href="#" onclick="doLogout()" style="color:#ef4444;margin-top:8px">Sair</a>
   </div>
 
   <div class="main">
@@ -160,6 +162,33 @@ textarea{min-height:80px}
       </div>
     </div>
 
+    <!-- SECURITY -->
+    <div id="section-security" style="display:none">
+      <h2>Segurança</h2>
+      <div class="card">
+        <h3 style="margin-bottom:16px">Alterar senha do admin</h3>
+        <div class="form-group">
+          <label>Senha atual</label>
+          <input type="password" id="sec-current-pass" placeholder="Token atual">
+        </div>
+        <div class="form-group">
+          <label>Nova senha</label>
+          <input type="password" id="sec-new-pass" placeholder="Nova senha (mínimo 8 caracteres)">
+        </div>
+        <div class="form-group">
+          <label>Confirmar nova senha</label>
+          <input type="password" id="sec-confirm-pass" placeholder="Repita a nova senha">
+        </div>
+        <button class="btn" onclick="changePassword()">Alterar senha</button>
+        <div id="sec-result" style="margin-top:12px;font-size:.85rem"></div>
+      </div>
+      <div class="card" style="margin-top:16px">
+        <h3 style="margin-bottom:16px">Sessão</h3>
+        <p style="color:var(--muted);font-size:.9rem;margin-bottom:16px">Encerrar sessão atual e voltar pra tela de login.</p>
+        <button class="btn btn-danger" onclick="doLogout()">Sair do painel</button>
+      </div>
+    </div>
+
     <!-- Save bar -->
     <div style="position:sticky;bottom:0;padding:16px 0;background:var(--bg);border-top:1px solid var(--border);margin-top:32px;display:flex;gap:12px;align-items:center">
       <button class="btn" onclick="saveAll()">Salvar alterações</button>
@@ -179,7 +208,7 @@ let token = sessionStorage.getItem('nyxacore_admin_token') || '';
 async function doLogin() {
   const t = document.getElementById('login-token').value.trim();
   try {
-    const res = await fetch('/api/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token: t }) });
+    const res = await fetch('/api.php?action=login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token: t }) });
     const data = await res.json();
     if (data.ok) {
       token = data.token;
@@ -204,7 +233,7 @@ document.getElementById('login-token').addEventListener('keydown', e => { if (e.
 // ═══ Content ═══
 async function loadContent() {
   try {
-    const res = await fetch('/api/content');
+    const res = await fetch('/api.php?action=content');
     content = await res.json();
     renderAll();
     showStatus('Conteúdo carregado');
@@ -216,7 +245,7 @@ async function loadContent() {
 async function saveAll() {
   collectAll();
   try {
-    const res = await fetch('/api/content', {
+    const res = await fetch('/api.php?action=content', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
       body: JSON.stringify(content),
@@ -413,6 +442,61 @@ document.querySelectorAll('.sidebar a[data-section]').forEach(link => {
 
 // ═══ Helpers ═══
 function esc(s) { return (s || '').replace(/"/g, '&quot;').replace(/</g, '&lt;'); }
+function doLogout() {
+  sessionStorage.removeItem('nyxacore_admin_token');
+  token = '';
+  document.getElementById('login-overlay').classList.remove('hidden');
+  document.getElementById('login-token').value = '';
+  document.getElementById('login-error').textContent = '';
+}
+
+async function changePassword() {
+  const current = document.getElementById('sec-current-pass').value.trim();
+  const newPass = document.getElementById('sec-new-pass').value.trim();
+  const confirm = document.getElementById('sec-confirm-pass').value.trim();
+  const resultEl = document.getElementById('sec-result');
+  resultEl.style.color = '#ef4444';
+
+  if (!current || !newPass || !confirm) {
+    resultEl.textContent = 'Preencha todos os campos.';
+    return;
+  }
+  if (newPass.length < 8) {
+    resultEl.textContent = 'A nova senha deve ter no mínimo 8 caracteres.';
+    return;
+  }
+  if (newPass !== confirm) {
+    resultEl.textContent = 'As senhas não coincidem.';
+    return;
+  }
+  if (current !== token) {
+    resultEl.textContent = 'Senha atual incorreta.';
+    return;
+  }
+
+  try {
+    const res = await fetch('/api.php?action=change_password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify({ current_token: current, new_token: newPass }),
+    });
+    const data = await res.json();
+    if (data.ok) {
+      token = newPass;
+      sessionStorage.setItem('nyxacore_admin_token', token);
+      resultEl.style.color = 'var(--accent)';
+      resultEl.textContent = 'Senha alterada com sucesso!';
+      document.getElementById('sec-current-pass').value = '';
+      document.getElementById('sec-new-pass').value = '';
+      document.getElementById('sec-confirm-pass').value = '';
+    } else {
+      resultEl.textContent = data.error || 'Erro ao alterar senha.';
+    }
+  } catch (e) {
+    resultEl.textContent = 'Erro de conexão.';
+  }
+}
+
 function showStatus(msg) { document.getElementById('save-status').textContent = msg; }
 function showToast(msg) {
   const t = document.getElementById('toast');

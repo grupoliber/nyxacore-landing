@@ -772,7 +772,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 // ═══ Dynamic content from /api/content ═══
 (async function loadDynamicContent() {
   try {
-    const res = await fetch('/api/content');
+    const res = await fetch('/api.php?action=content');
     if (!res.ok) return;
     const c = await res.json();
 
